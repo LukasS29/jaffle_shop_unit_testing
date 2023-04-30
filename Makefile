@@ -41,3 +41,39 @@ test\:happy:
 
 test\:happy\:run:
 	$(MAKE) -s test:happy
+
+test_dbt_sad_vars_flag_only = '{\
+	"is_e2e_test": true \
+}'
+test_dbt_sad_vars = '{\
+	"is_e2e_test": true, \
+	"${var}": "{{ ref(\"$(source)\") }}",\
+}'
+test\:single-sad:
+	poetry run dbt --no-use-colors run --select +$(model) --vars $(test_dbt_sad_vars) --full-refresh --profiles-dir profiles/ && \
+	poetry run dbt --no-use-colors test --select $(model) --vars $(test_dbt_sad_vars) --profiles-dir profiles/ \
+	|| true
+
+test\:sad:
+	output_dir="/tmp/dbt_test_output" ; \
+	mkdir -p $$output_dir ; \
+	echo "> Seeding test data..." ; \
+	poetry run dbt --no-use-colors seed --select seeds/tests/sad_path --vars $(test_dbt_sad_vars_flag_only) --full-refresh --profiles-dir profiles/ \
+		| tee $$output_dir/seeds.txt \
+		| grep 'identity provider\|URL' ; \
+	for FILE in ./seeds/tests/sad_path/**/*.csv ; do \
+		model_name=$$(basename $$(dirname $$FILE)) ; \
+		test_name=$$(basename $$FILE .csv) ; \
+		test_name_var=$${test_name%_vars_*} ; \
+		test_name_source=$${test_name#*_vars_} ; \
+		test_output=$$output_dir/$$model_name/$$test_name.txt; \
+		mkdir -p $$(dirname $$test_output) ; \
+		echo "> Asserting test fails for '$$model_name' with '$$test_name'..." ; \
+		make test:single-sad model=$$model_name var=$$test_name_var source=$$test_name > $$test_output ; \
+		cat $$test_output | grep -q "Failure in test $$test_name_source" \
+		&& echo "\033[32mSUCCESS\033[0m" \
+		|| { echo "\033[31mFAILED\033[0m"; echo "Full test output: $$test_output" ; exit 1 ; }  ; \
+	done
+
+test\:sad\:run:
+	$(MAKE) -s test:sad
