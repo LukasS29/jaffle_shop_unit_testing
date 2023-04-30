@@ -1,0 +1,6 @@
+"customer_id","first_name","last_name","first_order","most_recent_order","number_of_orders","customer_lifetime_value"
+1,"Michael","P.","2018-01-01","2018-02-10",2,33
+2,"Shawn","M.","2018-01-11","2018-01-11",1,23
+3,"Kathleen","P.","2018-01-02","2018-03-11",3,65
+4,"Jimmy","C.",,,,
+5,"Katherine","R.",,,,
