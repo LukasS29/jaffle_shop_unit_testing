@@ -3,3 +3,6 @@ init:
 
 configure:
 	docker run --rm --link jaffel_shop_db:postgres --volume `pwd`/scripts:/scripts -e PGPASSWORD=1234supersafe postgres psql --host postgres --username jaffeler -d jaffel_shop --file /scripts/setup_postgres.sql
+
+build:
+	poetry run dbt build --profiles-dir profiles/
