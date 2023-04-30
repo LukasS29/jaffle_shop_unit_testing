@@ -7,6 +7,7 @@ authors = ["Lukas Sandmeir <lukas@sandmeir.info>"]
 [tool.poetry.dependencies]
 python = "^3.9"
 dbt-core = "^1.4.5"
+dbt-postgres = "^1.4.5"
 
 [tool.poetry.dev-dependencies]
 
