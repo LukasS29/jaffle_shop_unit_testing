@@ -29,6 +29,12 @@ models:
       - name: total_order_amount
         description: Total value (AUD) of a customer's orders
 
+    tests:
+      - dbt_utils.equality:
+          compare_model: var("expected_outcome_customers")
+          config:
+            enabled: '{{ var("is_unit_test") }}'
+
   - name: orders
     description: This table has basic information about orders, as well as some derived facts based on payments
 
@@ -80,3 +86,9 @@ models:
         description: Amount of the order (AUD) paid for by gift card
         tests:
           - not_null
+
+    tests:
+      - dbt_utils.equality:
+          compare_model: var("expected_outcome_orders")
+          config:
+            enabled: '{{ var("is_unit_test") }}'

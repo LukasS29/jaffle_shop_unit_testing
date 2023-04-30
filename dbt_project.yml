@@ -29,3 +29,6 @@ vars:
   source_customers: '{{ ref("raw_customers") }}'
   source_orders: '{{ ref("raw_orders") }}'
   source_payments: '{{ ref("raw_payments") }}'
+  is_unit_test: false
+  expected_outcome_customers: '{{ ref("customers") }}'
+  expected_outcome_orders: '{{ ref("orders") }}'
