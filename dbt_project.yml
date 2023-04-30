@@ -24,3 +24,8 @@ models:
       materialized: table
       staging:
         materialized: view
+
+vars:
+  source_customers: '{{ ref("raw_customers") }}'
+  source_orders: '{{ ref("raw_orders") }}'
+  source_payments: '{{ ref("raw_payments") }}'
